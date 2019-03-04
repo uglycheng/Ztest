@@ -1,3 +1,7 @@
+import  matplotlib
+
+
+
 def get_usefuldata(filename=""): 
     fp=open(filename)
     lines=fp.readlines()

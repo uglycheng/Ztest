@@ -11,7 +11,7 @@
 int main (void)
 {
     
-    int j;
+    int j,k=1000; //k用来模拟zmq_recv的返回值与1000的比较
   
     struct timeval tve;
     FILE *fp;
@@ -35,7 +35,7 @@ int main (void)
     
     for(j=0;j<1000;j++){
         char message[1000];
-        if(zmq_recv (responder, message, 1000, 0)==1000)
+        if(k==1000)
         {
             //printf("%s\n",zmq_strerror(errno));
 			gettimeofday(&tve,NULL);
