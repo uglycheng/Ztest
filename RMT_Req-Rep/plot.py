@@ -11,28 +11,28 @@ def get_useful_data(filename=""):
         m_and_u_seconds[1]=int(m_and_u_seconds[1])
         useful_data.append(m_and_u_seconds)
     raw_data.close()
-    return m_and_u_seconds
+    return useful_data
 
 def get_throughput(data=[],filename=""):
-    throughput=open(filename,'w')
-    timeval=[]
-    for i in range(1,len(data)):
-        timeval.append((data[i][0]-data[i-1][0])*1000000+data[i][1]-data[i-1][1])
-        throughput.write(str(timeval[i-1])+"\n")
-    throughput.close()
-    return timeval
+	throughput=open(filename,'w')
+	timeval=[]
+	for i in range(1,len(data)):
+		timeval.append((data[i][0]-data[i-1][0])*1000000 + data[i][1]- data[i-1][1])
+		throughput.write(str(timeval[i-1])+"\n")
+	throughput.close()
+	return timeval
 
 def get_latency(send=[],recv=[]):
-    latency=[]
+    latency_data=[]
     latency=open("latency",'w')
     if len(send)!=len(recv):
         print("length not same\n")
         return 1
-    for i in range(0,len(sub)):
-        latency.append(( (recv[i][0] - send[i][0])*1000000 + recv[i][1] - send[i][1]) / 2)
-        latency.write(str(latency[i])+"\n")
+    for i in range(0,len(send)):
+        latency_data.append(( (recv[i][0] - send[i][0])*1000000 + recv[i][1] - send[i][1]) / 2)
+        latency.write(str(latency_data[i])+"\n")
     latency.close()
-    return latency
+    return latency_data
 
 
 '''generate data file'''
@@ -43,19 +43,30 @@ recv_throughput = get_throughput(recv_data,"recv_throughput")
 latency_data = get_latency(send_data,recv_data)
 
 '''plot throughput and latenct'''
-plt.subplot(1,2,1)
-plt.title("throughput")
+plt.figure(figsize=(20,20),dpi=200)
+
+plt.subplot(2,2,1)
+plt.title("throughput_recv")
 plt.xlabel("order of messages")
 plt.ylabel("time to process the message (us)")
-plt.plot(list(range(1,len(send_throughput)+1)),send_throughput,label="send")
-plt.plot(list(range(1,len(recv_throughput)+1)),recv_throughput,label="recv")
+plt.plot(list(range(1,len(recv_throughput)+1)),recv_throughput,linewidth=0.5)
+#plt.plot(list(range(1,len(send_throughput)+1)),send_throughput,linewidth=0.5,label='send')
+#plt.legend(loc="upper right")
 
-plt.subplot(1,2,2)
+plt.subplot(2,2,2)
+plt.title("throughput_send")
+plt.xlabel("order of messages")
+plt.ylabel("time to process the message (us)")
+plt.plot(list(range(1,len(send_throughput)+1)),send_throughput,linewidth=0.5)
+
+
+plt.subplot(2,1,2)
 plt.title("latency")
 plt.ylabel("latency (us)")
 plt.xlabel("order of messages")
 plt.plot(list(range(1,len(latency_data)+1)),latency_data)
 
+plt.tight_layout()
 plt.savefig("ZMQ_Performance_Test.png")
 
 
